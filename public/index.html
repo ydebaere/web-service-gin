@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home Page</title>
+</head>
+<body>
+    <div id="users"></div>
+
+    <h2>Add User</h2>
+    <input id="name" type="text" placeholder="Name">
+    <input id="email" type="text" placeholder="Email">
+    <button id="addUser">Add User</button>
+
+    <h2>Search User</h2>
+    <input id="searchId" type="text" placeholder="User ID">
+    <button id="searchUser">Search User</button>
+
+    <h2>Show All Users</h2>
+    <button id="showUsers">Show Users</button>
+
+    <script>
+        window.onload = function() {
+            document.getElementById('addUser').onclick = function() {
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                fetch('http://localhost:8080/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email }),
+                });
+            };
+
+            document.getElementById('searchUser').onclick = function() {
+                const id = document.getElementById('searchId').value;
+                fetch(`http://localhost:8080/users/${id}`)
+                    .then(response => response.json())
+                    .then(user => {
+                        const usersDiv = document.getElementById('users');
+                        usersDiv.innerHTML = ''; // Clear the users div
+                        const userDiv = document.createElement('div');
+                        userDiv.textContent = `ID: ${user.id}, Name: ${user.name}, Email: ${user.email}`;
+                        usersDiv.appendChild(userDiv);
+                    });
+            };
+
+            document.getElementById('showUsers').onclick = function() {
+                fetch('http://localhost:8080/users')
+                    .then(response => response.json())
+                    .then(users => {
+                        const usersDiv = document.getElementById('users');
+                        usersDiv.innerHTML = ''; // Clear the users div
+                        users.forEach(user => {
+                            const userDiv = document.createElement('div');
+                            userDiv.textContent = `ID: ${user.id}, Name: ${user.name}, Email: ${user.email}`;
+                            usersDiv.appendChild(userDiv);
+                        });
+                    });
+            };
+        };
+    </script>
+</body>
+</html>
