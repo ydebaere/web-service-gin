@@ -1,12 +1,19 @@
 package user
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AddUser(c *gin.Context) {
+type User struct {
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+func AddUser(db *sql.DB, c *gin.Context) {
 	var newUser User
 	if err := c.BindJSON(&newUser); err != nil {
 		return
@@ -16,7 +23,7 @@ func AddUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "user added"})
 }
 
-func GetUsers(c *gin.Context) {
+func GetUsers(db *sql.DB, c *gin.Context) {
 	var users []User
 	rows, err := db.Query("SELECT * FROM users")
 	if err != nil {
@@ -35,7 +42,7 @@ func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-func GetUser(c *gin.Context) {
+func GetUser(db *sql.DB, c *gin.Context) {
 	id := c.Param("id")
 	row := db.QueryRow("SELECT * FROM users WHERE id = ?", id)
 	var user User

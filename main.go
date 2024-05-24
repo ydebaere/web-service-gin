@@ -10,12 +10,6 @@ import (
 	"github.com/ydebaere/web-service-gin/api/user"
 )
 
-type User struct {
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-}
-
 var db *sql.DB
 
 func main() {
